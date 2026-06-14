@@ -7,6 +7,7 @@ This Streamlit demo mirrors the earlier lung ventilator / toaster flow:
 3. **Ontology enrichment**: generic safety properties and implied facts are added deterministically.
 4. **Generic FTA hazard-template matching**: small AND/OR fault-tree templates are evaluated deterministically.
 5. **LLM backward investigation**: for each relevant hazard template, the LLM starts from the hazard pattern and investigates whether the design graph supports, partially supports, or does not support the hazard path.
+6. **Potentially relevant norms / standards**: the app resolves standards deterministically from `standards_catalogue.yaml` and matched hazard IDs. The LLM is not allowed to invent standards.
 
 The hazard templates are deliberately generic:
 
@@ -54,6 +55,7 @@ data/
   relations.yaml
   propagation_rules.yaml
   fault_tree_hazard_templates.yaml
+  standards_catalogue.yaml
   default_design_description.txt
 
 .streamlit/
@@ -63,4 +65,4 @@ data/
 
 ## Important
 
-This demo is for early design hazard awareness. It does not certify product safety and does not replace expert risk assessment.
+This demo is for early design hazard awareness. It does not certify product safety and does not replace expert risk assessment. Standards/norms shown are potential relevance signals only; final applicability depends on product scope, market, installation context and expert legal/safety review.

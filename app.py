@@ -549,6 +549,124 @@ def fallback_backward(row: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+
+
+# ----------------------------
+# Potentially applicable norms / standards resolution
+# ----------------------------
+
+
+def confidence_to_score(value) -> float:
+    if isinstance(value, (int, float)):
+        return max(0.0, min(1.0, float(value)))
+    value = str(value or "medium").lower()
+    if value == "high":
+        return 0.85
+    if value == "low":
+        return 0.35
+    return 0.60
+
+
+def score_to_label(score: float) -> str:
+    if score >= 0.75:
+        return "high"
+    if score >= 0.45:
+        return "medium"
+    return "low"
+
+
+def relation_level_factor(level: str) -> float:
+    level = str(level or "conditional").lower()
+    if level == "primary":
+        return 1.0
+    if level == "conditional":
+        return 0.78
+    if level == "supporting_evidence":
+        return 0.62
+    if level == "related_but_insufficient":
+        return 0.45
+    return 0.55
+
+
+def backward_status_factor(status: str) -> float:
+    status = str(status or "").lower()
+    if status == "confirmed_context":
+        return 1.0
+    if status == "strong_potential":
+        return 0.9
+    if status == "potential_pathway":
+        return 0.75
+    if status == "partial_evidence":
+        return 0.45
+    if status == "missing_information_only":
+        return 0.25
+    if status in ["dismissed_by_evidence", "no_evidence"]:
+        return 0.0
+    return 0.5
+
+
+def resolve_potential_norms(hazard_rows: List[Dict[str, Any]], standards_catalogue: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Resolve potentially relevant norms deterministically from hazard template IDs.
+
+    The LLM is not allowed to invent standards. This function only uses
+    standards_catalogue.yaml and the hazard IDs/statuses found by deterministic
+    and LLM hazard analysis.
+    """
+    if not hazard_rows:
+        return []
+
+    hazard_by_id = {}
+    for row in hazard_rows:
+        hid = row.get("Template ID") or row.get("hazard_id")
+        if not hid:
+            continue
+        status = row.get("Backward status") or row.get("Deterministic status") or "potential_pathway"
+        if backward_status_factor(status) <= 0.0:
+            continue
+        hazard_by_id.setdefault(hid, row)
+
+    norm_rows = []
+    for entry_id, entry in (standards_catalogue.get("entries", {}) or {}).items():
+        matched_links = []
+        for link in entry.get("addresses_hazards", []) or []:
+            hazard_id = link.get("hazard_id")
+            if hazard_id not in hazard_by_id:
+                continue
+            hazard_row = hazard_by_id[hazard_id]
+            relation_level = link.get("relation_level", entry.get("default_relation_level", "conditional"))
+            base_conf = confidence_to_score(link.get("confidence", entry.get("base_confidence", "medium")))
+            hazard_status = hazard_row.get("Backward status") or hazard_row.get("Deterministic status") or "potential_pathway"
+            status_factor = backward_status_factor(hazard_status)
+            hazard_conf = confidence_to_score(hazard_row.get("Confidence score", hazard_row.get("Deterministic confidence", "medium")))
+            combined_score = base_conf * relation_level_factor(relation_level) * max(status_factor, hazard_conf * status_factor)
+            matched_links.append({
+                "hazard_id": hazard_id,
+                "hazard_title": hazard_row.get("Hazard template", hazard_id),
+                "relation_level": relation_level,
+                "combined_score": combined_score,
+                "rationale": link.get("rationale", entry.get("rationale", "")),
+                "status": hazard_status,
+            })
+
+        if not matched_links:
+            continue
+
+        strongest = sorted(matched_links, key=lambda x: x["combined_score"], reverse=True)[0]
+        norm_rows.append({
+            "Norm / regulation": entry.get("display_name", entry_id),
+            "Hazards addressed": "; ".join(sorted({m["hazard_title"] for m in matched_links})),
+            "Level of relation": "; ".join(sorted({m["relation_level"] for m in matched_links})),
+            "Confidence": score_to_label(strongest["combined_score"]),
+            "Confidence score": round(strongest["combined_score"], 2),
+            "Rationale": " | ".join([m["rationale"] for m in matched_links if m.get("rationale")]),
+            "Applicability condition / scope note": entry.get("scope_note", ""),
+            "Hazard status evidence": "; ".join(sorted({m["status"] for m in matched_links})),
+        })
+
+    norm_rows.sort(key=lambda r: r["Confidence score"], reverse=True)
+    return norm_rows
+
+
 # ----------------------------
 # Graph visualization
 # ----------------------------
@@ -597,6 +715,7 @@ ontology = load_yaml(DATA_DIR / "ontology.yaml")
 relations = load_yaml(DATA_DIR / "relations.yaml")
 rules = load_yaml(DATA_DIR / "propagation_rules.yaml")
 templates = load_yaml(DATA_DIR / "fault_tree_hazard_templates.yaml")
+standards_catalogue = load_yaml(DATA_DIR / "standards_catalogue.yaml")
 default_description = (DATA_DIR / "default_design_description.txt").read_text(encoding="utf-8")
 
 with st.sidebar:
@@ -614,6 +733,7 @@ with st.sidebar:
     st.write("`relations.yaml`")
     st.write("`propagation_rules.yaml`")
     st.write("`fault_tree_hazard_templates.yaml`")
+    st.write("`standards_catalogue.yaml`")
 
 st.subheader("1. System / design description")
 description = st.text_area("Unstructured design description", value=default_description, height=280)
@@ -696,10 +816,13 @@ with st.spinner("Running backward hazard investigation..."):
             }
         )
 
+norm_rows = resolve_potential_norms(backward_rows, standards_catalogue)
+
 st.success(f"Analysis complete. Normalization source: {normalization_source}.")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Result: backward hazard analysis",
+    "Potential norms / standards",
     "Deterministic FTA matches",
     "Normalized facts",
     "Safety Context Graph",
@@ -742,6 +865,16 @@ with tab1:
         st.info("No templates selected for backward investigation.")
 
 with tab2:
+    st.header("Potentially relevant norms / standards")
+    st.caption("Resolved deterministically from standards_catalogue.yaml and matched hazard template IDs. The LLM is not allowed to invent standards.")
+    if norm_rows:
+        norm_df = pd.DataFrame(norm_rows)
+        st.dataframe(norm_df, use_container_width=True, hide_index=True)
+        st.download_button("Download norms table as CSV", data=norm_df.to_csv(index=False).encode("utf-8"), file_name="vertical_moving_bridge_norms_table.csv", mime="text/csv")
+    else:
+        st.info("No potentially relevant norms were resolved from the standards catalogue.")
+
+with tab3:
     st.header("Deterministic generic FTA matches")
     if deterministic_results:
         df_det = pd.DataFrame([{k: v for k, v in r.items() if k != "Template object"} for r in deterministic_results])
@@ -761,17 +894,17 @@ with tab2:
     else:
         st.info("No deterministic FTA hazard template matched.")
 
-with tab3:
+with tab4:
     st.header("Normalized facts")
     st.caption("This is the LLM/fallback extraction before deterministic ontology enrichment and propagation.")
     st.json(normalized)
 
-with tab4:
+with tab5:
     st.header("Safety Context Graph")
     st.graphviz_chart(make_dot(graph), use_container_width=True)
     st.subheader("Graph triples")
     st.dataframe(pd.DataFrame(graph), use_container_width=True, hide_index=True)
 
-with tab5:
+with tab6:
     st.header("Generic small FTA hazard templates")
     st.code(yaml.dump(templates, sort_keys=False, allow_unicode=True), language="yaml")
