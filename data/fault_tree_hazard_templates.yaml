@@ -1,0 +1,338 @@
+templates:
+
+  - id: "FT_ELECTRIC_SHOCK"
+    title: "Electric shock"
+    category: "generic_electrical_hazard"
+    top_event: "electric_shock"
+    fault_tree:
+      type: "AND"
+      label: "Electric shock"
+      children:
+        - id: "hazardous_electrical_energy"
+          type: "EVENT"
+          label: "Hazardous electrical energy is present"
+          match:
+            concepts_any:
+              - "hazardous_voltage"
+              - "electric_shock_potential"
+              - "hazardous_voltage_supply"
+        - id: "human_access_or_contact"
+          type: "EVENT"
+          label: "Human access or contact is possible"
+          match:
+            concepts_any:
+              - "human"
+              - "human_access"
+              - "user_accessible"
+              - "passenger"
+              - "operator"
+        - id: "protection_unknown_or_not_confirmed"
+          type: "UNKNOWN_OK"
+          label: "Electrical protection is not confirmed"
+          missing_information:
+            - "Is live-part access prevented?"
+            - "Is there insulation or enclosure protection?"
+            - "Is protective earth or double insulation required?"
+            - "Are access panels locked or tool-access only?"
+            - "Is moisture ingress considered?"
+    output:
+      careful_wording: >
+        Potential electric shock pathway if hazardous electrical energy can become accessible
+        to a passenger, operator or technician and protection is missing, failed or unknown.
+
+  - id: "FT_FIRE_OVERHEATING"
+    title: "Fire or overheating"
+    category: "generic_fire_hazard"
+    top_event: "fire_or_overheating"
+    fault_tree:
+      type: "AND"
+      label: "Fire or overheating"
+      children:
+        - id: "fuel_present"
+          type: "EVENT"
+          label: "Combustible material is present"
+          match:
+            concepts_any:
+              - "combustible_material"
+              - "plastic_material"
+              - "cable_insulation"
+              - "oil"
+              - "grease"
+        - id: "ignition_or_heat_source"
+          type: "EVENT"
+          label: "Ignition or heat source is present"
+          match:
+            concepts_any:
+              - "possible_ignition_source"
+              - "electrical_energy"
+              - "overheating"
+              - "hot_surface"
+              - "spark"
+              - "arc"
+        - id: "oxygen_or_air_assumed"
+          type: "ASSUMED"
+          label: "Air / oxidizer is normally present"
+        - id: "local_context_unknown_or_present"
+          type: "UNKNOWN_OK"
+          label: "Local proximity/separation is not fully confirmed"
+          missing_information:
+            - "Are combustible materials close to electrical or hot components?"
+            - "What are the material flammability properties?"
+            - "Are temperature limits known?"
+            - "Is overcurrent or thermal protection provided?"
+            - "Can debris, dust or grease accumulate?"
+    output:
+      careful_wording: >
+        Potential fire or overheating pathway if combustible material, ignition/heat source
+        and air are present in a relevant local context.
+
+  - id: "FT_MECHANICAL_INJURY_MOVING_PARTS"
+    title: "Mechanical injury due to moving parts"
+    category: "generic_mechanical_hazard"
+    top_event: "mechanical_injury_due_to_moving_parts"
+    fault_tree:
+      type: "AND"
+      label: "Mechanical injury due to moving parts"
+      children:
+        - id: "moving_part_or_hazardous_motion"
+          type: "EVENT"
+          label: "Moving part or hazardous motion is present"
+          match:
+            concepts_any:
+              - "moving_part"
+              - "hazardous_movement"
+              - "vertical_motion"
+              - "mechanical_energy"
+        - id: "human_can_be_near_or_access_zone"
+          type: "EVENT"
+          label: "Human can access or be near the moving zone"
+          match:
+            concepts_any:
+              - "human"
+              - "human_access"
+              - "passenger"
+              - "operator"
+              - "maintenance staff"
+        - id: "protection_or_safe_state_unknown"
+          type: "UNKNOWN_OK"
+          label: "Guards, interlocks or safe stop behavior are not fully confirmed"
+          missing_information:
+            - "Are moving parts guarded?"
+            - "Are access gates interlocked?"
+            - "Is presence detection provided?"
+            - "What is the safe state on sensor/control failure?"
+            - "Is manual override controlled?"
+    output:
+      careful_wording: >
+        Potential mechanical injury pathway where a moving element can contact,
+        trap, strike or pull in a person.
+
+  - id: "FT_CRUSHING_SHEARING_TRAPPING"
+    title: "Crushing, shearing or trapping"
+    category: "generic_mechanical_hazard"
+    top_event: "crushing_shearing_trapping"
+    fault_tree:
+      type: "AND"
+      label: "Crushing, shearing or trapping"
+      children:
+        - id: "relative_movement"
+          type: "EVENT"
+          label: "Relative movement is present"
+          match:
+            concepts_any:
+              - "vertical_motion"
+              - "hazardous_movement"
+              - "moving_part"
+        - id: "fixed_or_opposing_structure"
+          type: "EVENT"
+          label: "Fixed/opposing structure or narrowing gap is present"
+          match:
+            concepts_any:
+              - "fixed_structure"
+              - "guide_rail"
+              - "pinch_point"
+              - "crushing_zone"
+              - "shearing_zone"
+        - id: "human_access"
+          type: "EVENT"
+          label: "Human access to the movement or gap area is possible"
+          match:
+            concepts_any:
+              - "human"
+              - "human_access"
+              - "passenger"
+              - "operator"
+        - id: "protective_measures_unknown"
+          type: "UNKNOWN_OK"
+          label: "Separation, guarding or detection is not fully confirmed"
+          missing_information:
+            - "Are crushing and shearing gaps physically guarded?"
+            - "Are safety distances defined?"
+            - "Are sensors safety-rated?"
+            - "Is movement speed/force limited?"
+            - "What happens during power loss or control failure?"
+    output:
+      careful_wording: >
+        Potential crushing/shearing/trapping pathway if a person can access a gap
+        between moving and fixed parts.
+
+  - id: "FT_FALL_FROM_HEIGHT"
+    title: "Fall from height"
+    category: "generic_fall_hazard"
+    top_event: "fall_from_height"
+    fault_tree:
+      type: "AND"
+      label: "Fall from height"
+      children:
+        - id: "elevated_or_edge_present"
+          type: "EVENT"
+          label: "Elevated surface, edge or gap is present"
+          match:
+            concepts_any:
+              - "elevated"
+              - "fall_edge"
+              - "elevated_platform"
+              - "platform_edge"
+        - id: "human_access_to_area"
+          type: "EVENT"
+          label: "Human access to the elevated area is possible"
+          match:
+            concepts_any:
+              - "human"
+              - "human_access"
+              - "passenger"
+              - "operator"
+        - id: "edge_protection_unknown"
+          type: "UNKNOWN_OK"
+          label: "Edge protection, gate or transition protection is not fully confirmed"
+          missing_information:
+            - "Are guardrails or gates provided?"
+            - "Are platform gaps controlled during vertical movement?"
+            - "Are doors/gates interlocked?"
+            - "Is the transition to the target entrance protected?"
+            - "Is evacuation from elevated position considered?"
+    output:
+      careful_wording: >
+        Potential fall-from-height pathway if persons can access an elevated area,
+        open edge or transition gap without confirmed protection.
+
+  - id: "FT_COLLISION_IMPACT"
+    title: "Collision or impact"
+    category: "generic_collision_hazard"
+    top_event: "collision_or_impact"
+    fault_tree:
+      type: "AND"
+      label: "Collision or impact"
+      children:
+        - id: "moving_structure_or_load"
+          type: "EVENT"
+          label: "Moving structure or moving load is present"
+          match:
+            concepts_any:
+              - "moving_part"
+              - "hazardous_movement"
+              - "vertical_motion"
+              - "mechanical_energy"
+        - id: "person_or_object_in_path"
+          type: "EVENT"
+          label: "Person or object can be in movement path"
+          match:
+            concepts_any:
+              - "human"
+              - "human_access"
+              - "passenger"
+              - "obstruction"
+        - id: "detection_or_separation_unknown"
+          type: "UNKNOWN_OK"
+          label: "Detection, separation or speed/force limitation is not fully confirmed"
+          missing_information:
+            - "Is the motion path separated from passengers?"
+            - "Is obstruction detection provided?"
+            - "Are speed and force limited?"
+            - "Is movement stopped on detection?"
+            - "Is visibility/driver supervision required?"
+    output:
+      careful_wording: >
+        Potential collision or impact pathway if a moving bridge element can contact
+        a person or object in its movement path.
+
+  - id: "FT_LOSS_OF_SUPPORT_STABILITY"
+    title: "Loss of support or stability"
+    category: "generic_structural_hazard"
+    top_event: "loss_of_support_or_stability"
+    fault_tree:
+      type: "AND"
+      label: "Loss of support or stability"
+      children:
+        - id: "persons_or_load_supported"
+          type: "EVENT"
+          label: "Persons or load are supported by structure"
+          match:
+            concepts_any:
+              - "carries_persons"
+              - "elevated_platform"
+              - "bridge_platform"
+        - id: "lifting_or_support_structure_present"
+          type: "EVENT"
+          label: "Lifting/support structure is present"
+          match:
+            concepts_any:
+              - "vertical_reciprocating_conveyor"
+              - "vertical_lift_mechanism"
+              - "guide_rail"
+              - "support_structure"
+        - id: "structural_limits_unknown"
+          type: "UNKNOWN_OK"
+          label: "Structural limits, overload and stability protection are not fully confirmed"
+          missing_information:
+            - "What is the rated load?"
+            - "Is overload detection provided?"
+            - "Are structural safety factors defined?"
+            - "Is wind load considered?"
+            - "What happens if lifting mechanism fails?"
+            - "Is emergency lowering or load holding provided?"
+    output:
+      careful_wording: >
+        Potential loss of support or stability pathway if persons are supported by
+        a lifting or elevated structure and structural limits/protection are not confirmed.
+
+  - id: "FT_UNINTENDED_MOVEMENT"
+    title: "Unintended movement"
+    category: "generic_control_hazard"
+    top_event: "unintended_movement"
+    fault_tree:
+      type: "AND"
+      label: "Unintended movement"
+      children:
+        - id: "actuator_or_motion_control_present"
+          type: "EVENT"
+          label: "Actuator or motion control is present"
+          match:
+            concepts_any:
+              - "electric_actuator"
+              - "motor_controller"
+              - "control_function"
+              - "mechanical_energy"
+        - id: "movement_can_affect_human"
+          type: "EVENT"
+          label: "Movement can affect a human-accessible area"
+          match:
+            concepts_any:
+              - "human_access"
+              - "passenger"
+              - "operator"
+              - "elevated_platform"
+        - id: "control_failure_unknown"
+          type: "UNKNOWN_OK"
+          label: "Control failure behavior is not fully confirmed"
+          missing_information:
+            - "What prevents unintended start?"
+            - "Are commands validated?"
+            - "Is safe state defined for controller failure?"
+            - "Is manual override protected?"
+            - "Are limit switches or position sensors safety-rated?"
+            - "Is restart after power loss controlled?"
+    output:
+      careful_wording: >
+        Potential unintended movement pathway if actuators can move a human-accessible
+        structure and command/control failure behavior is not confirmed.

@@ -1,0 +1,65 @@
+rules:
+
+  - id: "PR_MOVING_PART_NEAR_HUMAN_CREATES_MECHANICAL_INJURY_CONTEXT"
+    description: >
+      A moving or hazardous movement component near a human-accessible area creates
+      a generic mechanical injury context.
+    if_all:
+      - concept_or_property: "moving_part"
+      - concept_or_property: "human_access"
+    derive:
+      relation: "may_cause"
+      object: "mechanical_injury_due_to_moving_parts"
+
+  - id: "PR_VERTICAL_MOTION_CREATES_CRUSHING_SHEARING_CONTEXT"
+    description: >
+      Vertical motion with nearby fixed structures or access areas creates possible
+      crushing, shearing or trapping zones.
+    if_all:
+      - concept_or_property: "vertical_motion"
+      - concept_or_property: "crushing_zone"
+    derive:
+      relation: "may_cause"
+      object: "crushing_shearing_trapping"
+
+  - id: "PR_ELEVATED_PLATFORM_AND_HUMAN_ACCESS_CREATES_FALL_CONTEXT"
+    description: >
+      Elevated user-accessible platforms or open edges create fall-from-height context.
+    if_all:
+      - concept_or_property: "elevated"
+      - concept_or_property: "human_access"
+    derive:
+      relation: "may_cause"
+      object: "fall_from_height"
+
+  - id: "PR_HAZARDOUS_VOLTAGE_AND_HUMAN_ACCESS_CREATES_SHOCK_CONTEXT"
+    description: >
+      Hazardous voltage with possible human access creates an electric shock context
+      unless adequate protection is confirmed.
+    if_all:
+      - concept_or_property: "hazardous_voltage"
+      - concept_or_property: "human_access"
+    derive:
+      relation: "may_cause"
+      object: "electric_shock"
+
+  - id: "PR_FUEL_AND_IGNITION_SOURCE_CREATES_FIRE_CONTEXT"
+    description: >
+      Combustible material and a possible ignition source in the same system create
+      a generic fire/overheating context.
+    if_all:
+      - concept_or_property: "combustible_material"
+      - concept_or_property: "possible_ignition_source"
+    derive:
+      relation: "may_cause"
+      object: "fire_or_overheating"
+
+  - id: "PR_MOISTURE_AND_ELECTRICAL_ENERGY_CREATES_ELECTRICAL_FAULT_CONTEXT"
+    description: >
+      Moisture and electrical energy may create short-circuit, shock or fire context.
+    if_all:
+      - concept_or_property: "moisture"
+      - concept_or_property: "electrical_energy"
+    derive:
+      relation: "may_cause"
+      object: "electrical_fault_due_to_moisture"

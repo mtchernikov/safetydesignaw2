@@ -1,0 +1,49 @@
+relations:
+  has_component:
+    group: structural
+    description: "System contains component."
+  is_a:
+    group: taxonomy
+    description: "Entity belongs to concept/type."
+  has_property:
+    group: property
+    description: "Entity has a safety-relevant property."
+  connected_to:
+    group: structural
+    description: "Component is physically or functionally connected to another component."
+  near:
+    group: spatial
+    description: "Entity is spatially close to another entity."
+  located_inside:
+    group: spatial
+    description: "Entity is located inside another entity."
+  drives:
+    group: motion
+    description: "Component creates movement in another component."
+  controls:
+    group: control
+    description: "Component controls another component."
+  stops:
+    group: safety_control
+    description: "Component can stop another component or motion."
+  monitors:
+    group: sensing
+    description: "Sensor monitors an area, component or condition."
+  protects_from:
+    group: protection
+    description: "Guard/protection reduces exposure to hazard source."
+  supplies_energy_to:
+    group: energy
+    description: "Energy source supplies another component."
+  can_contact:
+    group: human_interaction
+    description: "Human can contact or reach an entity."
+  can_enter:
+    group: human_interaction
+    description: "Human can enter an area."
+  creates_hazard_zone:
+    group: hazard_relation
+    description: "Entity creates a generic hazardous zone."
+  may_cause:
+    group: hazard_relation
+    description: "Entity or condition may cause a generic hazard."

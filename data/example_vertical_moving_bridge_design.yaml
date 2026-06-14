@@ -1,0 +1,133 @@
+system:
+  id: vertical_moving_bridge_system
+  type: vertical_moving_passenger_bridge
+  description: >
+    Passenger bridge mounted on a vertical reciprocating conveyor.
+    The bridge moves vertically to align with a vehicle, cabin, aircraft, ship,
+    train or platform entrance. Passengers and staff can stand on or near the bridge.
+
+components:
+  - id: bridge_platform
+    type: elevated_platform
+    description: "Walking surface for passengers."
+    properties:
+      - user_accessible
+      - carries_persons
+      - elevated
+
+  - id: vertical_lift_mechanism
+    type: vertical_reciprocating_conveyor
+    description: "Vertical lifting mechanism moving the bridge platform up and down."
+    properties:
+      - moving_part
+      - vertical_motion
+      - hazardous_movement
+      - crushing_zone
+      - shearing_zone
+    connected_to:
+      - bridge_platform
+
+  - id: guide_rails
+    type: guide_rail
+    description: "Guides the platform during vertical movement."
+    properties:
+      - fixed_structure
+      - pinch_point
+    near:
+      - bridge_platform
+      - vertical_lift_mechanism
+
+  - id: electric_actuator
+    type: electric_actuator
+    description: "Electric actuator or motor driving the vertical lift."
+    properties:
+      - moving_part
+      - possible_ignition_source
+      - mechanical_energy
+    drives:
+      - vertical_lift_mechanism
+
+  - id: motor_controller
+    type: electrical_control_cabinet
+    description: "Controller for actuator and motion commands."
+    properties:
+      - electrical_energy
+      - control_function
+    controls:
+      - electric_actuator
+
+  - id: mains_supply
+    type: hazardous_voltage_supply
+    description: "Electrical supply for the motor controller."
+    properties:
+      - hazardous_voltage
+    supplies_energy_to:
+      - motor_controller
+
+  - id: platform_edge
+    type: fall_edge
+    description: "Open edge or transition edge of the elevated bridge."
+    properties:
+      - fall_edge
+      - human_access
+
+  - id: landing_gate
+    type: access_gate
+    description: "Gate or door intended to protect access to the platform edge or moving zone."
+    properties:
+      - guard
+      - interlocked_guard
+    protects_from:
+      - platform_edge
+      - vertical_lift_mechanism
+
+  - id: presence_sensor
+    type: presence_sensor
+    description: "Sensor intended to detect a person or obstruction in the movement area."
+    properties:
+      - protective_device
+      - detection_function
+    monitors:
+      - bridge_platform
+      - vertical_lift_mechanism
+
+  - id: emergency_stop
+    type: emergency_stop
+    description: "Emergency stop device for stopping hazardous movement."
+    properties:
+      - safety_control
+    stops:
+      - vertical_lift_mechanism
+
+  - id: passenger
+    type: human
+    description: "Passenger or operator near the bridge."
+    properties:
+      - human
+      - human_access
+    near:
+      - bridge_platform
+      - platform_edge
+      - vertical_lift_mechanism
+
+materials:
+  - id: plastic_cable_tray
+    type: plastic_material
+    description: "Cable tray or plastic cover near electrical cabinet."
+    properties:
+      - combustible_material
+    near:
+      - motor_controller
+
+environment:
+  - id: outdoor_weather
+    type: environment
+    properties:
+      - rain_possible
+      - wind_possible
+      - moisture_possible
+
+operation_modes:
+  - normal_boarding
+  - maintenance
+  - manual_override
