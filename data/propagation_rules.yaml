@@ -1,65 +1,70 @@
 rules:
-
-  - id: "PR_MOVING_PART_NEAR_HUMAN_CREATES_MECHANICAL_INJURY_CONTEXT"
-    description: >
-      A moving or hazardous movement component near a human-accessible area creates
-      a generic mechanical injury context.
+  - id: PR_MOVING_PART_NEAR_HUMAN_CREATES_MECHANICAL_INJURY_CONTEXT
+    description: Moving or hazardous movement plus human access creates a generic mechanical injury context.
     if_all:
-      - concept_or_property: "moving_part"
-      - concept_or_property: "human_access"
+      - concept_or_property: moving_part
+      - concept_or_property: human_access
     derive:
-      relation: "may_cause"
-      object: "mechanical_injury_due_to_moving_parts"
+      subject: system_context
+      relation: may_cause
+      object: mechanical_injury_due_to_moving_parts
 
-  - id: "PR_VERTICAL_MOTION_CREATES_CRUSHING_SHEARING_CONTEXT"
-    description: >
-      Vertical motion with nearby fixed structures or access areas creates possible
-      crushing, shearing or trapping zones.
+  - id: PR_VERTICAL_MOTION_CREATES_CRUSHING_SHEARING_CONTEXT
+    description: Vertical motion and crushing/shearing zone create a crushing/shearing/trapping context.
     if_all:
-      - concept_or_property: "vertical_motion"
-      - concept_or_property: "crushing_zone"
+      - concept_or_property: vertical_motion
+      - concept_or_property: crushing_zone
     derive:
-      relation: "may_cause"
-      object: "crushing_shearing_trapping"
+      subject: system_context
+      relation: may_cause
+      object: crushing_shearing_trapping
 
-  - id: "PR_ELEVATED_PLATFORM_AND_HUMAN_ACCESS_CREATES_FALL_CONTEXT"
-    description: >
-      Elevated user-accessible platforms or open edges create fall-from-height context.
+  - id: PR_ELEVATED_HUMAN_ACCESS_CREATES_FALL_CONTEXT
+    description: Elevated surface and human access create fall-from-height context.
     if_all:
-      - concept_or_property: "elevated"
-      - concept_or_property: "human_access"
+      - concept_or_property: elevated
+      - concept_or_property: human_access
     derive:
-      relation: "may_cause"
-      object: "fall_from_height"
+      subject: system_context
+      relation: may_cause
+      object: fall_from_height
 
-  - id: "PR_HAZARDOUS_VOLTAGE_AND_HUMAN_ACCESS_CREATES_SHOCK_CONTEXT"
-    description: >
-      Hazardous voltage with possible human access creates an electric shock context
-      unless adequate protection is confirmed.
+  - id: PR_HAZARDOUS_VOLTAGE_AND_HUMAN_ACCESS_CREATES_SHOCK_CONTEXT
+    description: Hazardous voltage and human access create electric shock context unless protection is confirmed.
     if_all:
-      - concept_or_property: "hazardous_voltage"
-      - concept_or_property: "human_access"
+      - concept_or_property: hazardous_voltage
+      - concept_or_property: human_access
     derive:
-      relation: "may_cause"
-      object: "electric_shock"
+      subject: system_context
+      relation: may_cause
+      object: electric_shock
 
-  - id: "PR_FUEL_AND_IGNITION_SOURCE_CREATES_FIRE_CONTEXT"
-    description: >
-      Combustible material and a possible ignition source in the same system create
-      a generic fire/overheating context.
+  - id: PR_FUEL_AND_IGNITION_SOURCE_CREATES_FIRE_CONTEXT
+    description: Combustible material and possible ignition source create fire/overheating context.
     if_all:
-      - concept_or_property: "combustible_material"
-      - concept_or_property: "possible_ignition_source"
+      - concept_or_property: combustible_material
+      - concept_or_property: possible_ignition_source
     derive:
-      relation: "may_cause"
-      object: "fire_or_overheating"
+      subject: system_context
+      relation: may_cause
+      object: fire_or_overheating
 
-  - id: "PR_MOISTURE_AND_ELECTRICAL_ENERGY_CREATES_ELECTRICAL_FAULT_CONTEXT"
-    description: >
-      Moisture and electrical energy may create short-circuit, shock or fire context.
+  - id: PR_MOISTURE_AND_ELECTRICAL_ENERGY_CREATES_ELECTRICAL_FAULT_CONTEXT
+    description: Moisture and electrical energy create possible electrical fault, shock or fire context.
     if_all:
-      - concept_or_property: "moisture"
-      - concept_or_property: "electrical_energy"
+      - concept_or_property: moisture
+      - concept_or_property: electrical_energy
     derive:
-      relation: "may_cause"
-      object: "electrical_fault_due_to_moisture"
+      subject: system_context
+      relation: may_cause
+      object: electrical_fault_due_to_moisture
+
+  - id: PR_CONTROL_FUNCTION_AND_HAZARDOUS_MOVEMENT_CREATES_UNINTENDED_MOVEMENT_CONTEXT
+    description: Control function and hazardous movement create unintended movement context.
+    if_all:
+      - concept_or_property: control_function
+      - concept_or_property: hazardous_movement
+    derive:
+      subject: system_context
+      relation: may_cause
+      object: unintended_movement

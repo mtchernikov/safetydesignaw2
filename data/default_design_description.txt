@@ -1,0 +1,12 @@
+The system is a passenger bridge mounted on a vertical reciprocating conveyor.
+The bridge platform moves vertically to align with a vehicle, aircraft, ship or train entrance.
+Passengers and staff can stand on the bridge platform during boarding and may be near the platform edge.
+The platform is moved by an electric motor and lift mechanism. A motor controller controls the movement.
+The system uses a 230 V AC electrical supply for the motor controller.
+Guide rails are located close to the moving platform.
+A landing gate is intended to prevent access to the moving zone and platform edge.
+A presence sensor detects people or obstructions in the movement area.
+An emergency stop is provided.
+The installation may be exposed to rain, wind and moisture.
+Some covers and cable trays are made of plastic.
+The design description does not yet define safety-rated interlocks, stopping distance, load holding, overload detection, emergency lowering, insulation concept, or protection against moisture ingress.

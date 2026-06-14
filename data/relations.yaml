@@ -1,49 +1,49 @@
 relations:
-  has_component:
-    group: structural
-    description: "System contains component."
   is_a:
     group: taxonomy
-    description: "Entity belongs to concept/type."
+    description: Entity belongs to a type or concept.
   has_property:
     group: property
-    description: "Entity has a safety-relevant property."
+    description: Entity has a safety-relevant property.
+  has_component:
+    group: structure
+    description: System contains component.
   connected_to:
-    group: structural
-    description: "Component is physically or functionally connected to another component."
+    group: structure
+    description: Physical or functional connection.
   near:
     group: spatial
-    description: "Entity is spatially close to another entity."
+    description: Spatial proximity.
   located_inside:
     group: spatial
-    description: "Entity is located inside another entity."
+    description: Location inside another entity.
   drives:
     group: motion
-    description: "Component creates movement in another component."
+    description: Component drives movement of another component.
   controls:
     group: control
-    description: "Component controls another component."
-  stops:
-    group: safety_control
-    description: "Component can stop another component or motion."
+    description: Component controls another component.
   monitors:
     group: sensing
-    description: "Sensor monitors an area, component or condition."
+    description: Sensor monitors area or component.
+  stops:
+    group: safety_control
+    description: Device stops motion or energy.
   protects_from:
     group: protection
-    description: "Guard/protection reduces exposure to hazard source."
+    description: Guard or protection reduces exposure to a hazard source.
   supplies_energy_to:
     group: energy
-    description: "Energy source supplies another component."
+    description: Energy source supplies another component.
+  can_access:
+    group: human_interaction
+    description: Human can access an area or component.
   can_contact:
     group: human_interaction
-    description: "Human can contact or reach an entity."
-  can_enter:
-    group: human_interaction
-    description: "Human can enter an area."
+    description: Human can contact an area or component.
   creates_hazard_zone:
     group: hazard_relation
-    description: "Entity creates a generic hazardous zone."
+    description: Entity creates a generic hazard zone.
   may_cause:
     group: hazard_relation
-    description: "Entity or condition may cause a generic hazard."
+    description: Entity or condition may cause generic hazard.

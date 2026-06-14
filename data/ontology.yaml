@@ -1,230 +1,263 @@
 concepts:
-
   vertical_moving_passenger_bridge:
-    canonical_name: "vertical moving passenger bridge"
-    type: "system"
+    canonical_name: vertical moving passenger bridge
+    type: system
     synonyms:
-      - "vertical moving bridge"
-      - "vertical passenger bridge"
-      - "passenger boarding bridge"
-      - "bridge on vertical reciprocating conveyor"
-      - "vertical reciprocating bridge"
+      - vertical moving bridge
+      - vertical passenger bridge
+      - passenger boarding bridge
+      - bridge mounted on vertical reciprocating conveyor
+      - bridge on vertical reciprocating conveyor
+      - vertical reciprocating bridge
 
   vertical_reciprocating_conveyor:
-    canonical_name: "vertical reciprocating conveyor"
-    type: "motion_subsystem"
+    canonical_name: vertical reciprocating conveyor
+    type: motion_subsystem
     synonyms:
-      - "vertical lift"
-      - "lifting mechanism"
-      - "VRC"
-      - "reciprocating conveyor"
+      - vertical lift
+      - lift mechanism
+      - lifting mechanism
+      - VRC
+      - reciprocating conveyor
     properties:
       - moving_part
       - vertical_motion
       - hazardous_movement
       - crushing_zone
       - shearing_zone
+      - mechanical_energy
     implied_facts:
-      - relation: "has_property"
-        object: "moving_part"
-      - relation: "has_property"
-        object: "hazardous_movement"
-      - relation: "creates_hazard_zone"
-        object: "crushing_zone"
-      - relation: "creates_hazard_zone"
-        object: "shearing_zone"
+      - relation: has_property
+        object: moving_part
+      - relation: has_property
+        object: vertical_motion
+      - relation: has_property
+        object: hazardous_movement
+      - relation: creates_hazard_zone
+        object: crushing_zone
+      - relation: creates_hazard_zone
+        object: shearing_zone
 
-  elevated_platform:
-    canonical_name: "elevated platform"
-    type: "structure"
+  bridge_platform:
+    canonical_name: bridge platform
+    type: structure
     synonyms:
-      - "bridge platform"
-      - "walking platform"
-      - "passenger platform"
+      - platform
+      - passenger platform
+      - walking platform
+      - bridge deck
     properties:
       - user_accessible
+      - human_access
       - carries_persons
       - elevated
     implied_facts:
-      - relation: "has_property"
-        object: "fall_from_height_relevant"
-      - relation: "has_property"
-        object: "human_access"
-
-  fall_edge:
-    canonical_name: "fall edge"
-    type: "geometry"
-    synonyms:
-      - "open edge"
-      - "platform edge"
-      - "gap"
-      - "transition gap"
-    properties:
-      - fall_edge
-      - human_access
-    implied_facts:
-      - relation: "may_cause"
-        object: "fall_from_height"
+      - relation: has_property
+        object: human_access
+      - relation: has_property
+        object: carries_persons
+      - relation: has_property
+        object: fall_from_height_relevant
 
   guide_rail:
-    canonical_name: "guide rail"
-    type: "mechanical_structure"
+    canonical_name: guide rail
+    type: mechanical_structure
     synonyms:
-      - "rail"
-      - "guide column"
-      - "guide frame"
+      - rail
+      - guide column
+      - guide frame
+      - fixed rail
     properties:
       - fixed_structure
       - pinch_point
 
-  electric_actuator:
-    canonical_name: "electric actuator"
-    type: "actuator"
+  platform_edge:
+    canonical_name: platform edge
+    type: geometry
     synonyms:
-      - "motor"
-      - "drive motor"
-      - "electric motor"
-      - "linear actuator"
-      - "hydraulic actuator"
+      - open edge
+      - fall edge
+      - transition edge
+      - gap
+      - transition gap
+    properties:
+      - fall_edge
+      - human_access
+    implied_facts:
+      - relation: may_cause
+        object: fall_from_height
+
+  electric_motor:
+    canonical_name: electric motor
+    type: actuator
+    synonyms:
+      - motor
+      - drive motor
+      - actuator
+      - electric actuator
+      - linear actuator
     properties:
       - moving_part
       - mechanical_energy
       - possible_ignition_source
     implied_facts:
-      - relation: "has_property"
-        object: "moving_part"
-      - relation: "has_property"
-        object: "mechanical_energy"
-      - relation: "has_property"
-        object: "possible_ignition_source"
+      - relation: has_property
+        object: moving_part
+      - relation: has_property
+        object: mechanical_energy
+      - relation: has_property
+        object: possible_ignition_source
 
-  electrical_control_cabinet:
-    canonical_name: "electrical control cabinet"
-    type: "electrical_subsystem"
+  motor_controller:
+    canonical_name: motor controller
+    type: electrical_subsystem
     synonyms:
-      - "control cabinet"
-      - "motor controller"
-      - "drive controller"
-      - "electrical cabinet"
+      - controller
+      - motor drive
+      - drive controller
+      - electrical cabinet
+      - control cabinet
     properties:
       - electrical_energy
+      - control_function
       - possible_ignition_source
     implied_facts:
-      - relation: "has_property"
-        object: "electrical_energy"
-      - relation: "has_property"
-        object: "possible_ignition_source"
+      - relation: has_property
+        object: electrical_energy
+      - relation: has_property
+        object: possible_ignition_source
+      - relation: has_property
+        object: control_function
 
   hazardous_voltage_supply:
-    canonical_name: "hazardous voltage supply"
-    type: "energy_source"
+    canonical_name: hazardous voltage supply
+    type: energy_source
     synonyms:
-      - "mains supply"
-      - "400 V supply"
-      - "230 V supply"
-      - "220 V supply"
-      - "high voltage supply"
+      - 230 V AC
+      - 230V AC
+      - 220 V AC
+      - 220V AC
+      - mains supply
+      - mains voltage
+      - line voltage
+      - high voltage supply
     properties:
       - hazardous_voltage
       - electric_shock_potential
+      - electrical_energy
     implied_facts:
-      - relation: "has_property"
-        object: "hazardous_voltage"
-      - relation: "may_cause"
-        object: "electric_shock"
+      - relation: has_property
+        object: hazardous_voltage
+      - relation: has_property
+        object: electric_shock_potential
+      - relation: may_cause
+        object: electric_shock
 
   plastic_material:
-    canonical_name: "plastic material"
-    type: "material"
+    canonical_name: plastic material
+    type: material
     synonyms:
-      - "plastic"
-      - "polymer"
-      - "plastic cover"
-      - "plastic cable tray"
+      - plastic
+      - polymer
+      - plastic cover
+      - plastic cable tray
+      - cable insulation
     properties:
       - combustible_material
     implied_facts:
-      - relation: "has_property"
-        object: "combustible_material"
+      - relation: has_property
+        object: combustible_material
 
-  human:
-    canonical_name: "human"
-    type: "actor"
+  passenger:
+    canonical_name: passenger
+    type: human_actor
     synonyms:
-      - "passenger"
-      - "operator"
-      - "technician"
-      - "maintenance staff"
-      - "user"
+      - human
+      - person
+      - user
+      - passenger
+      - operator
+      - staff
+      - technician
+      - maintenance staff
     properties:
       - human
       - human_access
 
-  access_gate:
-    canonical_name: "access gate"
-    type: "guard"
+  landing_gate:
+    canonical_name: landing gate
+    type: guard
     synonyms:
-      - "gate"
-      - "landing gate"
-      - "door"
-      - "barrier"
-      - "guard"
+      - gate
+      - landing gate
+      - door
+      - guard
+      - barrier
     properties:
       - guard
+      - protective_measure
     implied_facts:
-      - relation: "has_property"
-        object: "guard"
+      - relation: has_property
+        object: guard
+      - relation: has_property
+        object: protective_measure
 
   presence_sensor:
-    canonical_name: "presence sensor"
-    type: "protective_device"
+    canonical_name: presence sensor
+    type: protective_device
     synonyms:
-      - "light curtain"
-      - "presence detection"
-      - "obstruction sensor"
-      - "safety sensor"
-      - "proximity sensor"
+      - presence sensor
+      - obstruction sensor
+      - light curtain
+      - safety sensor
+      - proximity sensor
     properties:
       - protective_device
       - detection_function
 
   emergency_stop:
-    canonical_name: "emergency stop"
-    type: "safety_control"
+    canonical_name: emergency stop
+    type: safety_control
     synonyms:
-      - "E-stop"
-      - "emergency stop button"
-      - "emergency stop device"
+      - emergency stop
+      - E-stop
+      - emergency stop button
     properties:
       - safety_control
+      - stop_function
 
-  rain_possible:
-    canonical_name: "rain possible"
-    type: "environmental_condition"
-    properties:
-      - moisture_possible
-
-  moisture_possible:
-    canonical_name: "moisture possible"
-    type: "environmental_condition"
+  moisture:
+    canonical_name: moisture
+    type: environmental_condition
+    synonyms:
+      - rain
+      - moisture
+      - wet environment
+      - water ingress
+      - condensation
     properties:
       - moisture
 
 generic_properties:
   - hazardous_voltage
   - electric_shock_potential
+  - electrical_energy
   - combustible_material
   - possible_ignition_source
   - high_temperature
   - moving_part
   - hazardous_movement
+  - vertical_motion
   - crushing_zone
   - shearing_zone
   - pinch_point
   - elevated
   - fall_edge
   - human_access
+  - carries_persons
   - guard
   - protective_device
+  - protective_measure
   - safety_control
   - moisture
+  - control_function
